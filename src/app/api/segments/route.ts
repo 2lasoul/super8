@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import pool from '@/lib/db'
 import { randomUUID } from 'crypto'
+import { syncReferentiel } from '@/lib/syncReferentiel'
 
 export async function POST(req: Request) {
   const body = await req.json()
@@ -15,7 +16,6 @@ export async function POST(req: Request) {
 
   const conn = await pool.getConnection()
   try {
-    // Vérifier que le film existe et récupérer sa durée
     const [[film]] = await conn.execute('SELECT duree FROM films WHERE id = ?', [film_id]) as [{ duree: number }[], unknown]
     if (!film) return NextResponse.json({ error: 'Film introuvable' }, { status: 404 })
     if (tc_fin > film.duree) {
@@ -34,9 +34,13 @@ export async function POST(req: Request) {
         JSON.stringify(lieux || []),
         date_label || null,
         JSON.stringify(branches || []),
-        note || null
+        note || null,
       ]
     )
+
+    // Synchroniser automatiquement les valeurs saisies dans le référentiel
+    await syncReferentiel(conn, { personnes, evenements, lieux, branches })
+
     return NextResponse.json({ ok: true, id })
   } finally {
     conn.release()
