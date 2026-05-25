@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { fmtTC, calcGaps, calcCouverture } from '@/lib/types'
-import { useReferentiel, TagInput } from '@/lib/referentiel'
+import { useReferentiel, TagInput, invalidateReferentielCache } from '@/lib/referentiel'
 import type { Film, Segment } from '@/lib/types'
 
 const SEG_COLORS = ['#AFA9EC','#9FE1CB','#F5C4B3','#FAC775','#85B7EB','#C0DD97','#F4C0D1']
@@ -126,7 +126,7 @@ export default function AdminFilmPage({ params }: { params: { id: string } }) {
   const [currentTime, setCurrentTime] = useState(0)
   const [playing, setPlaying]     = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
-  const { byCategorie } = useReferentiel()
+  const { byCategorie, load: reloadRef } = useReferentiel()
 
   const load = useCallback(async () => {
     const res = await fetch(`/api/films/${params.id}`)
@@ -207,6 +207,8 @@ export default function AdminFilmPage({ params }: { params: { id: string } }) {
     }
     setSaving(false)
     cancelEdit()
+    invalidateReferentielCache()
+    await reloadRef()
     load()
   }
 

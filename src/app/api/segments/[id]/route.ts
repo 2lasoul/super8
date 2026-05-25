@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import pool from '@/lib/db'
+import { syncReferentiel } from '@/lib/syncReferentiel'
 
 type Params = { params: { id: string } }
 
@@ -26,9 +27,13 @@ export async function PATCH(req: Request, { params }: Params) {
         date_label || null,
         JSON.stringify(branches || []),
         note || null,
-        params.id
+        params.id,
       ]
     )
+
+    // Synchroniser automatiquement les valeurs saisies dans le référentiel
+    await syncReferentiel(conn, { personnes, evenements, lieux, branches })
+
     return NextResponse.json({ ok: true })
   } finally {
     conn.release()

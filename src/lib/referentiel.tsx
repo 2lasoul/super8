@@ -12,6 +12,10 @@ export interface RefItem {
 // Cache module-level pour éviter des rechargements inutiles
 let _cache: RefItem[] | null = null
 
+export function invalidateReferentielCache() {
+  _cache = null
+}
+
 export function useReferentiel() {
   const [items, setItems] = useState<RefItem[]>(_cache || [])
 
