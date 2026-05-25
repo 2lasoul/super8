@@ -1,0 +1,37 @@
+# Dépendances
+node_modules/
+
+# Build Next.js
+.next/
+out/
+
+# Variables d'environnement — NE JAMAIS committer .env
+.env
+.env.local
+.env.*.local
+
+# Vidéos — trop lourdes pour git
+public/videos/*.mp4
+public/videos/*.webm
+public/videos/*.mov
+public/videos/*.avi
+# Garder le dossier vide dans git
+!public/videos/.gitkeep
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# TypeScript
+tsconfig.tsbuildinfo
+
+# Docker volumes locaux
+docker-volumes/
