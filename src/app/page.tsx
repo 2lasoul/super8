@@ -10,7 +10,7 @@ import type { RefItem } from '@/lib/referentiel'
 const DEFAULT_COLORS = ['#AFA9EC','#9FE1CB','#FAC775','#F5C4B3','#85B7EB','#C0DD97']
 const DEFAULT_TEXTS  = ['#26215C','#04342C','#412402','#4A1B0C','#042C53','#1A3010']
 
-const YEAR_PAD = 2
+
 
 export default function HomePage() {
   const [films, setFilms]     = useState<Film[]>([])
@@ -48,9 +48,9 @@ export default function HomePage() {
   const branchColorMap: Record<string, { bg: string; text: string; label: string }> = {}
   allBranchKeys.forEach((k, i) => { branchColorMap[k] = getBranchColor(k, i) })
 
-  const years = films.map(f => f.annee).filter(Boolean) as number[]
-  const yearMin = years.length ? Math.min(...years) - YEAR_PAD : 1960
-  const yearMax = years.length ? Math.max(...years) + YEAR_PAD : 1985
+  const allYears = films.flatMap(f => [f.annee, f.annee_fin]).filter(Boolean) as number[]
+  const yearMin = allYears.length ? Math.min(...allYears) - 1 : 1960
+  const yearMax = allYears.length ? Math.max(...allYears) + 1 : 1985
   const span = yearMax - yearMin
 
   const pct = (y: number) => ((y - yearMin) / span * 100).toFixed(2) + '%'
@@ -112,7 +112,12 @@ export default function HomePage() {
                 const color = branchColorMap[mainBranch] || { bg: '#ccc', text: '#444', label: mainBranch }
                 const faded = filter !== 'all' && !branches.includes(filter)
                 const annee = film.annee ?? yearMin
-                const width = Math.max(1.5, (((film.annee_fin ?? annee) - annee + 0.8) / span) * 100)
+                const anneeFin = film.annee_fin ?? annee
+                // left = position de début, right = position de fin
+                // width = distance entre les deux positions
+                const leftPct = (annee - yearMin) / span * 100
+                const rightPct = (anneeFin - yearMin) / span * 100
+                const width = Math.max(1.5, rightPct - leftPct + (1 / span * 100))
 
                 return (
                   <div key={film.id} style={{ position: 'relative', height: 32 }}>
@@ -121,7 +126,7 @@ export default function HomePage() {
                         onMouseEnter={e => handleMouseEnter(e, film)}
                         onMouseLeave={() => setTooltip(null)}
                         style={{
-                          position: 'absolute', left: pct(annee),
+                          position: 'absolute', left: leftPct.toFixed(2) + '%',
                           width: `${width}%`, minWidth: 24, height: 28, top: 2,
                           background: color.bg, borderRadius: 4,
                           display: 'flex', alignItems: 'center', padding: '0 8px',
