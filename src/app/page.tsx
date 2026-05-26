@@ -105,18 +105,18 @@ export default function HomePage() {
             </div>
             <div style={{ height: 1, background: 'var(--gray-border)', marginBottom: 8 }} />
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, paddingBottom: 8 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, paddingBottom: 8, overflow: 'hidden' }}>
               {films.map(film => {
                 const branches = film.branches || []
                 const mainBranch = branches[0] || ''
                 const colorIdx = allBranchKeys.indexOf(mainBranch)
                 const color = branchColorMap[mainBranch] || { bg: '#ccc', text: '#444', label: mainBranch }
                 const faded = filter !== 'all' && !branches.includes(filter)
-                const annee = film.annee ?? yearMin
-                const anneeFin = (film.annee_fin ?? annee) + 1  // +1 pour couvrir l'année entière
-                const leftPct  = (annee    - yearMin) / span * 100
-                const rightPct = (anneeFin - yearMin) / span * 100
-                const width = Math.max(1.5, rightPct - leftPct)
+                const annee    = film.annee ?? yearMin
+                const anneeFin = film.annee_fin ?? annee
+                const leftPct  = Math.max(0, (annee    - yearMin) / span * 100)
+                const rightPct = Math.min(100, ((anneeFin + 1) - yearMin) / span * 100)
+                const width    = Math.max(1.5, rightPct - leftPct)
 
                 return (
                   <div key={film.id} style={{ position: 'relative', height: 32 }}>
