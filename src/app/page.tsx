@@ -115,7 +115,7 @@ export default function HomePage() {
                 const annee    = film.annee ?? yearMin
                 const anneeFin = film.annee_fin ?? annee
                 const leftPct  = Math.max(0, (annee    - yearMin) / span * 100)
-                const rightPct = Math.min(95, (anneeFin - yearMin + 1) / span * 100)
+                const rightPct = Math.min(95, (anneeFin + 0.9 - yearMin) / span * 100)
                 const width    = Math.max(1.5, rightPct - leftPct)
 
                 return (
