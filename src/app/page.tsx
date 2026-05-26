@@ -51,7 +51,7 @@ export default function HomePage() {
   const startYears = films.map(f => f.annee).filter(Boolean) as number[]
   const endYears   = films.map(f => f.annee_fin ?? f.annee).filter(Boolean) as number[]
   const yearMin = startYears.length ? Math.min(...startYears) - 1 : 1960
-  const yearMax = endYears.length   ? Math.max(...endYears)   + 2 : 1985
+  const yearMax = endYears.length   ? Math.max(...endYears)   + 3 : 1985
   const span = yearMax - yearMin
 
   const pct = (y: number) => ((y - yearMin) / span * 100).toFixed(2) + '%'
@@ -115,7 +115,7 @@ export default function HomePage() {
                 const annee    = film.annee ?? yearMin
                 const anneeFin = film.annee_fin ?? annee
                 const leftPct  = Math.max(0, (annee    - yearMin) / span * 100)
-                const rightPct = Math.min(100, ((anneeFin + 1) - yearMin) / span * 100)
+                const rightPct = Math.min(95, (anneeFin - yearMin + 1) / span * 100)
                 const width    = Math.max(1.5, rightPct - leftPct)
 
                 return (
