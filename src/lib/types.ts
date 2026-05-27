@@ -8,6 +8,7 @@ export interface Film {
   date_label: string | null
   description: string | null
   branches: string[]
+  poster_url?: string | null
   couverture?: number   // calculé : % de secondes annotées
   created_at?: string
   updated_at?: string

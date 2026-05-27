@@ -53,3 +53,6 @@ CREATE TABLE IF NOT EXISTS referentiel (
 
 -- Script de migration pour bases existantes
 -- (sans effet si la table vient d'être créée)
+
+-- Ajout colonne poster_url (optionnel, calculé automatiquement pour YouTube)
+ALTER TABLE films ADD COLUMN IF NOT EXISTS poster_url VARCHAR(1000) DEFAULT NULL;
